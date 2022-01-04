@@ -6,7 +6,7 @@ const Config = require('../configs/segredo')
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcryptjs")
 
-router.post('/', async (req, res) => {
+router.post('/registrar', async (req, res) => {
     let duplicado = await nomeOuEmailDuplicado(req, res)
     if (duplicado) return
 
@@ -44,6 +44,15 @@ router.get('/logar', (req, res) => {
                 res.status(404).json({ message: "Usuário não encontrado!" })
         })
         .catch(err => res.status(500).json({ error: err }))
+})
+
+router.get('/verificar_token', (req, res) => {
+    let token = req.headers["x-access-token"]
+    if (!token) return res.status(403).send({ message: "Token não fornecido!" })
+    jwt.verify(token, Config.segredo, (err, decoded) => {
+        if (err) return res.status(401).send({ message: "Token inválido!" })
+        if (decoded) return res.status(200).send({ message: "Token válido!", _id: decoded })
+    })
 })
 
 router.get('/', (req, res) => {
