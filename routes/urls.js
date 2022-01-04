@@ -13,65 +13,66 @@ router.post('/', (req, res) => {
     })
 
     url.save()
-        .then(result => { res.status(201).json({ message: "Salvo com sucesso!", _id: url._id }) })
-        .catch(err => { res.status(500).json({ error: err }) })
+        .then(() => res.status(201).json({ message: "Salvo com sucesso!", _id: url._id }))
+        .catch(err => res.status(500).json({ error: err }))
 })
-
-// router.route('/view/:id')
-//     .get((req, res) => {
-//     })
 
 router.get('/view/:id', (req, res) => {
     Url.findById(req.params.id)
         .exec()
-        .then(doc => {
-            if (doc._id) {
-                doc.views = doc.views + 1
-                Url.updateOne({ _id: doc._id }, { $set: doc }).exec()
-                    .then(result => { res.status(200).json({ message: "Uma visualização adicionada com sucesso!" }) })
-                    .catch(err => { res.status(500).json({ error: err }) })
+        .then(url => {
+            if (url._id) {
+                url.views = url.views + 1
+                Url.updateOne({ _id: url._id }, { $set: url }).exec()
+                    .then(() => res.status(200).json({ message: "Uma visualização adicionada com sucesso!" }))
+                    .catch(err => res.status(500).json({ error: err }))
             }
             else
-                res.status(404).json({})
+                res.status(404).json({ message: "URL não encontrada!" })
         })
-        .catch(() => { res.status(404).json({}) })
+        .catch(err => res.status(500).json({ error: err }))
 })
 
 router.get('/top100', async (req, res) => {
     Url.find()
         .populate('user')
         .exec()
-        .then(async docs => {
-            docs = await sortByViews(docs)
-            res.status(200).json(docs)
+        .then(async urls => {
+            urls = await sortByViews(urls)
+            res.status(200).json(urls)
         })
-        .catch(err => { res.status(500).json({ error: err }) })
+        .catch(err => res.status(500).json({ error: err }))
 })
 
 router.get('/', (req, res) => {
     Url.find()
         .populate('user')
         .exec()
-        .then(docs => { res.status(200).json(docs) })
-        .catch(err => { res.status(500).json({ error: err }) })
+        .then(urls => res.status(200).json(urls))
+        .catch(err => res.status(500).json({ error: err }))
 })
 
 router.get('/:id', (req, res) => {
     Url.findById(req.params.id)
         .populate('user')
         .exec()
-        .then(doc => {
-            if (doc) res.status(200).json(doc)
+        .then(url => {
+            if (url) res.status(200).json(url)
             else res.status(404).json({ message: 'Registro não encontrado!', _id: user._id })
         })
-        .catch(err => { res.status(500).json({ error: err }) })
+        .catch(err => res.status(500).json({ error: err }))
 })
 
+router.put('/:id', (req, res) => {
+    Url.updateOne({ _id: req.params.id }, { $set: req.body }).exec()
+        .then(() => res.status(200).json({ message: "Editado com sucesso!" }))
+        .catch(err => res.status(500).json({ error: err }))
+})
 
 router.delete('/:id', (req, res) => {
     Url.deleteOne({ _id: req.params.id }).exec()
-        .then(result => { res.status(200).json({ message: "Deletado com sucesso!" }) })
-        .catch(err => { res.status(500).json({ error: err }) })
+        .then(() => res.status(200).json({ message: "Deletado com sucesso!" }))
+        .catch(err => res.status(500).json({ error: err }))
 })
 
 sortByViews = async (data) => {
