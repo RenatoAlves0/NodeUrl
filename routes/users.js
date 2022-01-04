@@ -6,20 +6,24 @@ const Config = require('../configs/segredo')
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcryptjs")
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
+    let duplicado = await nomeOuEmailDuplicado(req, res)
+    if (duplicado) return
+
     const user = new User({
         _id: new mongoose.Types.ObjectId(),
         nome: req.body.nome,
-        login: req.body.login,
+        email: req.body.email,
         senha: bcrypt.hashSync(req.body.senha, 8)
     })
+
     user.save()
         .then(() => res.status(201).json({ message: "Salvo com sucesso!", _id: user._id }))
         .catch(err => res.status(500).json({ error: err }))
 })
 
 router.get('/logar', (req, res) => {
-    User.findOne({ login: req.body.login })
+    User.findOne({ email: req.body.email })
         .exec()
         .then(user => {
             if (user._id) {
@@ -32,7 +36,7 @@ router.get('/logar', (req, res) => {
                 res.status(200).json({
                     _id: user._id,
                     nome: user.nome,
-                    login: user.login,
+                    email: user.email,
                     accessToken: jwt.sign({ _id: user._id }, Config.segredo, { expiresIn: 86400 /* 24h */ })
                 })
             }
@@ -44,7 +48,7 @@ router.get('/logar', (req, res) => {
 
 router.get('/', (req, res) => {
     User.find()
-        .sort({ login: 'asc' })
+        .sort({ email: 'asc' })
         .exec()
         .then(users => res.status(200).json(users))
         .catch(err => res.status(500).json({ error: err }))
@@ -71,5 +75,28 @@ router.delete('/:id', (req, res) => {
         .then(() => res.status(200).json({ message: "Deletado com sucesso!" }))
         .catch(err => res.status(500).json({ error: err }))
 })
+
+nomeOuEmailDuplicado = async (req, res) => {
+    let duplicado = { nome: false, email: false }
+    let aux = ''
+    await User.findOne({ nome: req.body.nome })
+        .exec()
+        .then(user => { if (user) duplicado.nome = true })
+        .catch(err => res.status(500).json({ error: err }))
+
+    await User.findOne({ email: req.body.email })
+        .exec()
+        .then(user => { if (user) duplicado.email = true })
+        .catch(err => res.status(500).json({ error: err }))
+
+    if (duplicado.nome) aux = aux + 'Nome'
+    if (duplicado.nome && duplicado.email) aux = aux + ' e '
+    if (duplicado.email) aux = aux + 'Email'
+    if (aux != '') {
+        res.status(400).send({ message: "Erro! " + aux + " já em uso!" })
+        return true
+    }
+    return false
+}
 
 module.exports = router
