@@ -1,6 +1,6 @@
 {
     "env": {
         "MONGO_ATLAS_PW": "api",
-        "PORT": 3000
+        "PORT": 3001
     }
 }
