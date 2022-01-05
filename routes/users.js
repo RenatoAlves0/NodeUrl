@@ -23,17 +23,18 @@ router.post('/registrar', async (req, res) => {
 })
 
 router.get('/logar', (req, res) => {
-    User.findOne({ email: req.body.email })
+    User.findOne({ email: req.query.email })
         .exec()
         .then(user => {
             if (user._id) {
-                if (!bcrypt.compareSync(req.body.senha, user.senha))
+                if (!bcrypt.compareSync(req.query.senha, user.senha))
                     return res.status(401).json({
                         accessToken: null,
                         message: "Senha inválida!"
                     })
 
                 res.status(200).json({
+                    message: "Logado com sucesso!",
                     _id: user._id,
                     nome: user.nome,
                     email: user.email,
@@ -64,7 +65,7 @@ router.get('/', (req, res) => {
 })
 
 router.get('/:id', (req, res) => {
-    User.findById(req.params.id)
+    User.findById(req.query.id)
         .exec()
         .then(user => {
             if (user) res.status(200).json(user)
@@ -74,13 +75,13 @@ router.get('/:id', (req, res) => {
 })
 
 router.put('/:id', (req, res) => {
-    User.updateOne({ _id: req.params.id }, { $set: req.body }).exec()
+    User.updateOne({ _id: req.query.id }, { $set: req.body }).exec()
         .then(() => res.status(200).json({ message: "Editado com sucesso!" }))
         .catch(err => res.status(500).json({ error: err }))
 })
 
 router.delete('/:id', (req, res) => {
-    User.deleteOne({ _id: req.params.id }).exec()
+    User.deleteOne({ _id: req.query.id }).exec()
         .then(() => res.status(200).json({ message: "Deletado com sucesso!" }))
         .catch(err => res.status(500).json({ error: err }))
 })
