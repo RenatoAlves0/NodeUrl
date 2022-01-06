@@ -18,7 +18,7 @@ router.post('/registrar', async (req, res) => {
     })
 
     user.save()
-        .then(() => res.status(201).json({ message: "Salvo com sucesso!", _id: user._id }))
+        .then(() => res.status(201).json({ message: "Registrado com sucesso!", _id: user._id }))
         .catch(err => res.status(500).json({ error: err }))
 })
 
