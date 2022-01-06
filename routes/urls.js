@@ -58,7 +58,7 @@ router.get('/:id', (req, res) => {
         .exec()
         .then(url => {
             if (url) res.status(200).json(url)
-            else res.status(404).json({ message: 'Registro não encontrado!', _id: user._id })
+            else res.status(404).json({ message: 'URL não encontrada!', _id: user._id })
         })
         .catch(err => res.status(500).json({ error: err }))
 })
