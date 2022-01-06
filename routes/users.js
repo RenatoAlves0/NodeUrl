@@ -26,7 +26,7 @@ router.get('/logar', (req, res) => {
     User.findOne({ email: req.query.email })
         .exec()
         .then(user => {
-            if (user._id) {
+            if (user && user._id) {
                 if (!bcrypt.compareSync(req.query.senha, user.senha))
                     return res.status(401).json({
                         accessToken: null,
