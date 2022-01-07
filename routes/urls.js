@@ -8,7 +8,7 @@ router.post('/', (req, res) => {
         _id: new mongoose.Types.ObjectId(),
         big: req.body.big,
         small: encurtarUrl(),
-        views: 1,
+        views: 0,
         user: req.body.user
     })
 
