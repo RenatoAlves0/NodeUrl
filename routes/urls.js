@@ -18,13 +18,13 @@ router.post('/', (req, res) => {
 })
 
 router.get('/view/:id', (req, res) => {
-    Url.findById(req.query.id)
+    Url.findById(req.params.id)
         .exec()
         .then(url => {
             if (url._id) {
                 url.views = url.views + 1
                 Url.updateOne({ _id: url._id }, { $set: url }).exec()
-                    .then(() => res.status(200).json({ message: "Uma visualização adicionada com sucesso!" }))
+                    .then(() => res.status(200).json({ message: "Um clique adicionado com sucesso!" }))
                     .catch(err => res.status(500).json({ error: err }))
             }
             else
@@ -53,7 +53,7 @@ router.get('/', (req, res) => {
 })
 
 router.get('/:id', (req, res) => {
-    Url.findById(req.query.id)
+    Url.findById(req.params.id)
         .populate('user')
         .exec()
         .then(url => {
@@ -64,13 +64,13 @@ router.get('/:id', (req, res) => {
 })
 
 router.put('/:id', (req, res) => {
-    Url.updateOne({ _id: req.query.id }, { $set: req.body }).exec()
+    Url.updateOne({ _id: req.params.id }, { $set: req.body }).exec()
         .then(() => res.status(200).json({ message: "Editado com sucesso!" }))
         .catch(err => res.status(500).json({ error: err }))
 })
 
 router.delete('/:id', (req, res) => {
-    Url.deleteOne({ _id: req.query.id }).exec()
+    Url.deleteOne({ _id: req.params.id }).exec()
         .then(() => res.status(200).json({ message: "Deletado com sucesso!" }))
         .catch(err => res.status(500).json({ error: err }))
 })

@@ -65,7 +65,7 @@ router.get('/', (req, res) => {
 })
 
 router.get('/:id', (req, res) => {
-    User.findById(req.query.id)
+    User.findById(req.params.id)
         .exec()
         .then(user => {
             if (user) res.status(200).json(user)
@@ -75,13 +75,13 @@ router.get('/:id', (req, res) => {
 })
 
 router.put('/:id', (req, res) => {
-    User.updateOne({ _id: req.query.id }, { $set: req.body }).exec()
+    User.updateOne({ _id: req.params.id }, { $set: req.body }).exec()
         .then(() => res.status(200).json({ message: "Editado com sucesso!" }))
         .catch(err => res.status(500).json({ error: err }))
 })
 
 router.delete('/:id', (req, res) => {
-    User.deleteOne({ _id: req.query.id }).exec()
+    User.deleteOne({ _id: req.params.id }).exec()
         .then(() => res.status(200).json({ message: "Deletado com sucesso!" }))
         .catch(err => res.status(500).json({ error: err }))
 })
