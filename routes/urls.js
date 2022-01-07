@@ -52,23 +52,6 @@ router.get('/', (req, res) => {
         .catch(err => res.status(500).json({ error: err }))
 })
 
-router.get('/:id', (req, res) => {
-    Url.findById(req.params.id)
-        .populate('user')
-        .exec()
-        .then(url => {
-            if (url) res.status(200).json(url)
-            else res.status(404).json({ message: 'URL não encontrada!', _id: user._id })
-        })
-        .catch(err => res.status(500).json({ error: err }))
-})
-
-router.put('/:id', (req, res) => {
-    Url.updateOne({ _id: req.params.id }, { $set: req.body }).exec()
-        .then(() => res.status(200).json({ message: "Editado com sucesso!" }))
-        .catch(err => res.status(500).json({ error: err }))
-})
-
 router.delete('/:id', (req, res) => {
     Url.deleteOne({ _id: req.params.id }).exec()
         .then(() => res.status(200).json({ message: "Deletado com sucesso!" }))

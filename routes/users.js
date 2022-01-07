@@ -64,28 +64,6 @@ router.get('/', (req, res) => {
         .catch(err => res.status(500).json({ error: err }))
 })
 
-router.get('/:id', (req, res) => {
-    User.findById(req.params.id)
-        .exec()
-        .then(user => {
-            if (user) res.status(200).json(user)
-            else res.status(404).json({ message: 'Registro não encontrado!' })
-        })
-        .catch(err => res.status(500).json({ error: err }))
-})
-
-router.put('/:id', (req, res) => {
-    User.updateOne({ _id: req.params.id }, { $set: req.body }).exec()
-        .then(() => res.status(200).json({ message: "Editado com sucesso!" }))
-        .catch(err => res.status(500).json({ error: err }))
-})
-
-router.delete('/:id', (req, res) => {
-    User.deleteOne({ _id: req.params.id }).exec()
-        .then(() => res.status(200).json({ message: "Deletado com sucesso!" }))
-        .catch(err => res.status(500).json({ error: err }))
-})
-
 nomeOuEmailDuplicado = async (req, res) => {
     let duplicado = { nome: false, email: false }
     let aux = ''
