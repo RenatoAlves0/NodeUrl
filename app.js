@@ -25,7 +25,7 @@ app.use('/url', require('./routes/urls'))
 app.use('/user', require('./routes/users'))
 
 // Start
-const porta = process.env.PORT || 3002
+const porta = 3001 || 3002
 app.listen(porta, () => {
     console.log('Servidor iniciado na porta ' + porta)
 })

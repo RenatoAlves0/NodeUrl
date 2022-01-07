@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "clear && nodemon app.js"
+    "dev": "clear && nodemon app.js",
+    "start": "node app.js"
   },
   "author": "Renato Alves de Oliveira",
   "license": "ISC",
